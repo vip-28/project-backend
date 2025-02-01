@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import pool from "./config/db.js";
-
+import teacherRouter from "./routes/teacher.js";
 
 
 dotenv.config();
@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cors());
 
 //routes
-
+app.use("/teacher",teacherRouter);
 
 //error handling
 
