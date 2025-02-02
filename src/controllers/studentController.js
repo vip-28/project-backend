@@ -1,21 +1,82 @@
-import { GenDate } from "../utilities/date";
-
-export const markAttendance= async (req,res,next)=>{
-    try{
-        const { id,sub_id } = req.params;
-        let date = GenDate(new Date());
-        console.log(a);
-        let status= 'P';
-        
-
+import redisClient from "../config/cacheDb.js";
+import pool from "../config/db.js";
+import { markAttendanceService } from "../models/studentModel.js";
+const GenDate = (date) => {
+  const isoString = date.toISOString();
+  const formattedDate = isoString.split("T")[0];
+  return formattedDate;
+};
 
 
+// 1	"CSA"	2
+// 2	"CSB"	2
+// 3	"ITA"	2
+// 4	"ITB"	2
+// 5	"ETCA"	2
+// 6	"ETCB"	2
+// 7	"EI"	2
+// 8	"MECH"	2
+// 9	"CIVIL"	2
 
-        
-
-    }catch(err){
-        console.log(err);
-        
-        next(err);
+const getSec= (sec_id)=>{
+    if(sec_id==1){
+        return "CSA"
     }
+    if(sec_id==2){
+        return "CSB"
+    }    if(sec_id==3){
+        return "ITA"
+    }    if(sec_id==4){
+        return "ITB"
+    }    if(sec_id==5){
+        return "ETCA"
+    }    if(sec_id==6){
+        return "ETCB"
+    }    if(sec_id==7){
+        return "EI"
+    }    if(sec_id==8){
+        return "MECH"
+    }    if(sec_id==9){
+        return "CIVIL"
+    }
+
 }
+
+export const markAttendance = async (req, res, next) => {
+  try {
+    
+    const { id, sub_id,code } = req.params;
+    const date = GenDate(new Date());
+    const status = "P";
+const section=  await pool.query("select section_id from student where student_id= $1",[id])
+const year_res=  await pool.query("select year_id from student where student_id= $1",[id])
+
+const year= year_res.rows[0].year_id;
+const sec_id= section.rows[0].section_id;
+
+const sec= getSec(sec_id);
+
+const key = `${year}:${sec}:${code}`
+
+const data = await redisClient.GET(key)
+console.log(data);
+
+if(!data){
+    return res.send("Wrong Code");
+}
+
+const delKey= await redisClient.del(key);
+
+
+
+
+    const result = await markAttendanceService(id, sub_id, date,status, sec_id);
+
+    res.send({message: data})
+
+  } catch (err) {
+    console.log(err);
+
+    next(err);
+  }
+};

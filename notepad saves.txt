@@ -8,14 +8,6 @@ CREATE TABLE UNIQUECODES (
 );
 
 
-
-
-docker run -d --name redis-db -p 127.0.0.1:6379:6379 redis
-after this go in redis insight and create new db with 127.0.0.1:6379	
-
-
-
-
 CREATE TABLE Year (
     year_id SERIAL PRIMARY KEY,
     year_name VARCHAR(50) NOT NULL
@@ -56,39 +48,21 @@ CREATE TABLE Attendance (
     attendance_id SERIAL PRIMARY KEY,
     student_id INT REFERENCES Student(student_id) ON DELETE CASCADE,
     subject_id INT REFERENCES Subject(subject_id) ON DELETE CASCADE,
+    section_id INT REFERENCES Section(section_id) ON DELETE CASCADE,
     date DATE NOT NULL,
-    status VARCHAR(10) NOT NULL CHECK (status IN ('Present', 'Absent'))
+    status CHAR(1) NOT NULL DEFAULT 'A' CHECK (status IN ('P', 'A'))
 );
 
-CREATE INDEX idx_attendance_query ON Attendance(student_id, subject_id, date);
-
-
+CREATE INDEX date ON Attendance(student_id, subject_id, date);
 
 INSERT INTO Year (year_name) VALUES ('First Year'), ('Second Year'), ('Third Year'), ('Fourth Year');
-(select * from year)
 
 INSERT INTO SECTION (section_name, year_id) values
 ('CSA',2), ('CSB',2), ('ITA',2), ('ITB',2), ('ETCA',2), ('ETCB',2),('EI',2),('MECH',2),('CIVIL',2)
-(select * from section;)
-
-1	"CSA"	2
-2	"CSB"	2
-3	"ITA"	2
-4	"ITB"	2
-5	"ETCA"	2
-6	"ETCB"	2
-7	"EI"	2
-8	"MECH"	2
-9	"CIVIL"	2
 
 INSERT INTO Subject (subject_name, section_id) VALUES 
 ('Discrete Structures',1),('Discrete Structures',2), ('Operating Systems',1), ('Operating Systems',2), ('Machine Learning',1), ('Machine Learning',2), ('Database Management System',1), ('Database Management System',2), ('Computer Graphics',1), ('Computer Graphics',2), ('Engineering Economics',1), ('Engineering Economics',2) 
 
-(select * from subject sub
-join section sec on sub.section_id=sec.section_id;)
-
-(select sub.subject_name ,sec.section_name, year_id, subject_id, sub.section_id from subject sub
-join section sec on sub.section_id=sec.section_id;)
 
 INSERT INTO Student (student_name, year_id, section_id, roll_no) VALUES
 ('user1', 2, 1, '23csa1' ),
@@ -128,6 +102,36 @@ INSERT INTO Student (student_name, year_id, section_id, roll_no) VALUES
 ('test13', 2, 2, '23csb13'),
 ('test14', 2, 2, '23csb14'),
 ('test15', 2, 2, '23csb15')
+
+
+
+docker run -d --name redis-db -p 127.0.0.1:6379:6379 redis
+after this go in redis insight and create new db with 127.0.0.1:6379	
+
+
+
+
+(select * from year)
+
+
+(select * from section;)
+
+1	"CSA"	2
+2	"CSB"	2
+3	"ITA"	2
+4	"ITB"	2
+5	"ETCA"	2
+6	"ETCB"	2
+7	"EI"	2
+8	"MECH"	2
+9	"CIVIL"	2
+
+
+(select * from subject sub
+join section sec on sub.section_id=sec.section_id;)
+
+(select sub.subject_name ,sec.section_name, year_id, subject_id, sub.section_id from subject sub
+join section sec on sub.section_id=sec.section_id;)
 
 
 

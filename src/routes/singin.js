@@ -1,7 +1,7 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import JWT_SECRET from "../config/secrets";
+import JWT_SECRET from "../config/secrets.js";
 
 const signinrouter = express.Router();
 
