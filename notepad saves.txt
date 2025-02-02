@@ -14,3 +14,125 @@ docker run -d --name redis-db -p 127.0.0.1:6379:6379 redis
 after this go in redis insight and create new db with 127.0.0.1:6379	
 
 
+
+
+CREATE TABLE Year (
+    year_id SERIAL PRIMARY KEY,
+    year_name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Section (
+    section_id SERIAL PRIMARY KEY,
+    section_name VARCHAR(100) NOT NULL,
+    year_id INT REFERENCES Year(year_id) ON DELETE CASCADE
+);
+
+CREATE TABLE Subject (
+    subject_id SERIAL PRIMARY KEY,
+    subject_name VARCHAR(100) NOT NULL,
+    section_id INT REFERENCES Section(section_id) ON DELETE CASCADE
+);
+
+CREATE TABLE Faculty (
+    faculty_id SERIAL PRIMARY KEY,
+    faculty_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Subject_Faculty (
+    subject_id INT REFERENCES Subject(subject_id) ON DELETE CASCADE,
+    faculty_id INT REFERENCES Faculty(faculty_id) ON DELETE CASCADE,
+    PRIMARY KEY (subject_id, faculty_id)
+);
+
+CREATE TABLE Student (
+    student_id SERIAL PRIMARY KEY,
+    student_name VARCHAR(100) NOT NULL,
+    roll_no varchar(20) NOT NULL,
+    year_id INT REFERENCES Year(year_id) ON DELETE CASCADE,
+    section_id INT REFERENCES Section(section_id) ON DELETE CASCADE
+);
+
+CREATE TABLE Attendance (
+    attendance_id SERIAL PRIMARY KEY,
+    student_id INT REFERENCES Student(student_id) ON DELETE CASCADE,
+    subject_id INT REFERENCES Subject(subject_id) ON DELETE CASCADE,
+    date DATE NOT NULL,
+    status VARCHAR(10) NOT NULL CHECK (status IN ('Present', 'Absent'))
+);
+
+CREATE INDEX idx_attendance_query ON Attendance(student_id, subject_id, date);
+
+
+
+INSERT INTO Year (year_name) VALUES ('First Year'), ('Second Year'), ('Third Year'), ('Fourth Year');
+(select * from year)
+
+INSERT INTO SECTION (section_name, year_id) values
+('CSA',2), ('CSB',2), ('ITA',2), ('ITB',2), ('ETCA',2), ('ETCB',2),('EI',2),('MECH',2),('CIVIL',2)
+(select * from section;)
+
+1	"CSA"	2
+2	"CSB"	2
+3	"ITA"	2
+4	"ITB"	2
+5	"ETCA"	2
+6	"ETCB"	2
+7	"EI"	2
+8	"MECH"	2
+9	"CIVIL"	2
+
+INSERT INTO Subject (subject_name, section_id) VALUES 
+('Discrete Structures',1),('Discrete Structures',2), ('Operating Systems',1), ('Operating Systems',2), ('Machine Learning',1), ('Machine Learning',2), ('Database Management System',1), ('Database Management System',2), ('Computer Graphics',1), ('Computer Graphics',2), ('Engineering Economics',1), ('Engineering Economics',2) 
+
+(select * from subject sub
+join section sec on sub.section_id=sec.section_id;)
+
+(select sub.subject_name ,sec.section_name, year_id, subject_id, sub.section_id from subject sub
+join section sec on sub.section_id=sec.section_id;)
+
+INSERT INTO Student (student_name, year_id, section_id, roll_no) VALUES
+('user1', 2, 1, '23csa1' ),
+('user2', 2, 1, '23csa2' ),
+('user3', 2, 1, '23csa3' ),
+('user4', 2, 1, '23csa4' ),
+('user5', 2, 1, '23csa5' ),
+('user6', 2, 1, '23csa6' ),
+('user7', 2, 1, '23csa7' ),
+('user8', 2, 1, '23csa8' ),
+('user9', 2, 1, '23csa9' ),
+('user10', 2, 1, '23csa10' ),
+('user11', 2, 1, '23csa12' ),
+('user12', 2, 1, '23csa13' ),
+('user13', 2, 1, '23csa14' ),
+('user14', 2, 1, '23csa15' ),
+('user15', 2, 1, '23csa16')
+
+
+
+
+
+
+INSERT INTO Student (student_name, year_id, section_id, roll_no) VALUES
+('test1', 2, 2, '23csb1'),
+('test2', 2, 2, '23csb2'),
+('test3', 2, 2, '23csb3'),
+('test4', 2, 2, '23csb4'),
+('test5', 2, 2, '23csb5'),
+('test6', 2, 2, '23csb6'),
+('test7', 2, 2, '23csb7'),
+('test8', 2, 2, '23csb8'),
+('test9', 2, 2, '23csb9'),
+('test10', 2, 2, '23csb10'),
+('test11', 2, 2, '23csb11'),
+('test12', 2, 2, '23csb12'),
+('test13', 2, 2, '23csb13'),
+('test14', 2, 2, '23csb14'),
+('test15', 2, 2, '23csb15')
+
+
+
+//counting disting date 
+  SELECT subject_id, COUNT(DISTINCT date) AS total_classes
+FROM Attendance
+WHERE subject_id = 1  -- Replace with the desired subject_id
+GROUP BY subject_id;

@@ -1,33 +1,27 @@
 import { genCode } from "../utilities/genCode.js";
 import redisClient from "../config/cacheDb.js";
 
-import {
-   
-    createCodeService,
+import { createCodeService } from "../models/teacherModel.js";
 
-  } from "../models/teacherModel.js";
-  
-const pipeline= redisClient.multi();
+const pipeline = redisClient.multi();
 
 export const createCode = async (req, res, next) => {
-    try {
-      console.log(req.params);  // Debugging
-      const { year, sec, num } = req.params;
+  try {
+    console.log(req.params); // Debugging
+    const { year, sec, num } = req.params;
 
-        let arr= genCode(num);
+    let arr = genCode(num);
 
+    for (const e of arr) {
+      const key = `${year}:${sec}:${e}`;
 
-        
-        for(const e of arr){
-              const key = `${year}:${sec}:${e}`;
+      pipeline.setEx(key, 600, e);
+    }
+    await pipeline.exec();
 
-            pipeline.setEx(key, 600, e);
-        }
-        await pipeline.exec();
-        
-        for (const e of arr) {
-            await createCodeService(e,year,sec); 
-        }
+    for (const e of arr) {
+      await createCodeService(e, year, sec);
+    }
     //    arr.map( async (e)=>{
     //         // const key = `attendance_code:${studentId}`;
 
@@ -35,9 +29,8 @@ export const createCode = async (req, res, next) => {
     //         createCodeService(e);
     //     })
 
-        res.send({message:"Success"})
-      
-    } catch (err) {
-      next(err);
-    }
-  };
+    res.send({ message: "Success" });
+  } catch (err) {
+    next(err);
+  }
+};
