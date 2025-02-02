@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import pool from "./config/db.js";
 import teacherRouter from "./routes/teacher.js";
+import studentRouter from "./routes/student.js";
 
 
 dotenv.config();
@@ -17,6 +18,7 @@ app.use(cors());
 
 //routes
 app.use("/teacher",teacherRouter);
+app.use("/student", studentRouter);
 
 //error handling
 

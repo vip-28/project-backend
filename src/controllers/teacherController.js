@@ -31,6 +31,8 @@ export const createCode = async (req, res, next) => {
 
     res.send({ message: "Success" });
   } catch (err) {
+    console.log(err);
+    
     next(err);
   }
 };
