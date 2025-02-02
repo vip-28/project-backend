@@ -21,12 +21,12 @@ export const createCode = async (req, res, next) => {
         for(const e of arr){
               const key = `${year}:${sec}:${e}`;
 
-            pipeline.setEx(key, 60, e);
+            pipeline.setEx(key, 600, e);
         }
         await pipeline.exec();
         
         for (const e of arr) {
-            await createCodeService(e); 
+            await createCodeService(e,year,sec); 
         }
     //    arr.map( async (e)=>{
     //         // const key = `attendance_code:${studentId}`;
