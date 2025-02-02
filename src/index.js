@@ -3,11 +3,18 @@ import cors from "cors";
 import dotenv from "dotenv";
 import pool from "./config/db.js";
 import teacherRouter from "./routes/teacher.js";
-
+import cookieParser from "cookie-parser";
+import signinrouter from "./routes/singin.js";
+import signuprouter from "./routes/signup.js";
 
 dotenv.config();
 
 const app = express();
+app.use(cookieParser());
+app.use(cors({
+  credentials: true,
+  origin: "http://localhost:3004"
+}));
 
 const port = process.env.PORT || 3004;
 
@@ -17,6 +24,8 @@ app.use(cors());
 
 //routes
 app.use("/teacher",teacherRouter);
+app.use("/user/signin",signinrouter);
+app.use("/user/signup", signuprouter);
 
 //error handling
 
