@@ -1,0 +1,13 @@
+CREATE TABLE UNIQUECODES (
+  id serial not null,
+  code varchar(100),
+  status varchar(1) default 'A', 
+  created_at timestamp default current_timestamp
+);
+
+
+
+docker run -d --name redis-db -p 127.0.0.1:6379:6379 redis
+after this go in redis insight and create new db with 127.0.0.1:6379	
+
+
