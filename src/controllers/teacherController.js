@@ -11,16 +11,17 @@ const pipeline= redisClient.multi();
 
 export const createCode = async (req, res, next) => {
     try {
-        const num= req?.params.num;
+      console.log(req.params);  // Debugging
+      const { year, sec, num } = req.params;
 
         let arr= genCode(num);
 
 
         
         for(const e of arr){
-              const key = `attendance_code:${e}`;
+              const key = `${year}:${sec}:${e}`;
 
-            pipeline.setEx(key, 600, e);
+            pipeline.setEx(key, 60, e);
         }
         await pipeline.exec();
         
