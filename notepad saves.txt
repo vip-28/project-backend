@@ -158,14 +158,26 @@ GROUP BY subject_id;
 
 
 
-
-SELECT 
+// no $ signs included it just a normal query for SQL
+  SELECT 
     s.student_id, 
     s.student_name, 
     COUNT(a.date) AS attended_classes, 
-    (COUNT(a.date) * 100.0 / (SELECT COUNT(DISTINCT date) FROM attendance WHERE section_id = $1)) AS attendance_percentage
+    (COUNT(a.date) * 100.0 / 
+         NULLIF(
+            (SELECT COUNT(DISTINCT date) 
+             FROM attendance 
+             WHERE section_id = 1 AND subject_id = 2), 
+            0
+        )
+    ) AS attendance_percentage
 FROM student s
-LEFT JOIN attendance a ON s.student_id = a.student_id AND a.status = 'P'
-WHERE s.section_id = $1
+LEFT JOIN attendance a 
+    ON s.student_id = a.student_id 
+    AND a.status = 'P'
+    AND a.subject_id = 2  -- Ensures we count attendance for the given subject only
+WHERE s.section_id = 1 AND s.year_id=2
 GROUP BY s.student_id, s.student_name
 ORDER BY s.student_id;
+
+

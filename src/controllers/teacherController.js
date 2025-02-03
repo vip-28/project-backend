@@ -9,7 +9,7 @@ const GenDate = (date) => {
   return formattedDate;
 };
 
-const getSecID = (sec) => {
+export const getSecID = (sec) => {
   if (sec == "CSA") {
     return 1;
   }

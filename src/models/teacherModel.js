@@ -38,3 +38,14 @@ ORDER BY s.student_id;
 return result;
   }
 
+
+  export const teacherSign = async (
+    name , password, email
+  ) => {
+    const result = await pool.query(
+      "Insert into faculty(faculty_name,email,password) values ($1, $2, $3)",
+      [name, email, password]
+      
+    );
+    return result.rows[0];
+  };

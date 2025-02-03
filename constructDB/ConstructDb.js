@@ -46,7 +46,7 @@ CREATE TABLE Student (
     student_name VARCHAR(100) NOT NULL,
     email varchar(255) UNIQUE NOT NULL,
     password varchar(255) NOT NULL,
-    roll_no varchar(20) NOT NULL,
+    roll_no varchar(20) UNIQUE NOT NULL ,
     year_id INT REFERENCES Year(year_id) ON DELETE CASCADE,
     section_id INT REFERENCES Section(section_id) ON DELETE CASCADE
 );
