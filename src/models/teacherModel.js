@@ -5,3 +5,36 @@ export const createCodeService = async (code,year,sec) => {
     const result= await pool.query("INSERT INTO UNIQUECODES(code, year, section) VALUES ($1, $2, $3)",[code,year,sec])
     return result.rows[0];
   };
+
+
+  export const dateAdd= async (date,sec_id)=>{
+    const result= await pool.query("Insert into attendance(date,section_id) values($1, $2)",[date,sec_id]);
+    return result.rows[0];
+  }
+
+
+  export const getAttendanceService= async (sec,sub,year)=>{
+    const result= await pool.query(`  SELECT 
+    s.student_id, 
+    s.student_name, 
+    COUNT(a.date) AS attended_classes, 
+    (COUNT(a.date) * 100.0 / 
+         NULLIF(
+            (SELECT COUNT(DISTINCT date) 
+             FROM attendance 
+             WHERE section_id = $1 AND subject_id = $2), 
+            0
+        )
+    ) AS attendance_percentage
+FROM student s
+LEFT JOIN attendance a 
+    ON s.student_id = a.student_id 
+    AND a.status = 'P'
+    AND a.subject_id = $2  -- Ensures we count attendance for the given subject only
+WHERE s.section_id = $1 AND s.year_id=$3
+GROUP BY s.student_id, s.student_name
+ORDER BY s.student_id;
+`,[sec,sub,year])
+return result;
+  }
+

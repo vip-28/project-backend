@@ -61,8 +61,8 @@ CREATE INDEX date ON Attendance(student_id, subject_id, date);
 
 INSERT INTO Year (year_name) VALUES ('First Year'), ('Second Year'), ('Third Year'), ('Fourth Year');
 
-INSERT INTO SECTION (section_name, year_id) values
-('CSA',2), ('CSB',2), ('ITA',2), ('ITB',2), ('ETCA',2), ('ETCB',2),('EI',2),('MECH',2),('CIVIL',2)
+INSERT INTO SECTION (section_name, year_id, total_student) values
+('CSA',2,90), ('CSB',2,85), ('ITA',2,82), ('ITB',2,81), ('ETCA',2,80), ('ETCB',2,80),('EI',2,78),('MECH',2,70),('CIVIL',2,68)
 
 INSERT INTO Subject (subject_name, section_id) VALUES 
 ('Discrete Structures',1),('Discrete Structures',2), ('Operating Systems',1), ('Operating Systems',2), ('Machine Learning',1), ('Machine Learning',2), ('Database Management System',1), ('Database Management System',2), ('Computer Graphics',1), ('Computer Graphics',2), ('Engineering Economics',1), ('Engineering Economics',2) 
@@ -155,3 +155,17 @@ GROUP BY subject_id;
    }, {
      withCredentials: true // Necessary to receive cookies
    });
+
+
+
+
+SELECT 
+    s.student_id, 
+    s.student_name, 
+    COUNT(a.date) AS attended_classes, 
+    (COUNT(a.date) * 100.0 / (SELECT COUNT(DISTINCT date) FROM attendance WHERE section_id = $1)) AS attendance_percentage
+FROM student s
+LEFT JOIN attendance a ON s.student_id = a.student_id AND a.status = 'P'
+WHERE s.section_id = $1
+GROUP BY s.student_id, s.student_name
+ORDER BY s.student_id;

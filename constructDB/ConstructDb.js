@@ -17,7 +17,9 @@ CREATE TABLE Year (
 CREATE TABLE Section (
     section_id SERIAL PRIMARY KEY,
     section_name VARCHAR(100) NOT NULL,
+    total_student INT NOT NULL,
     year_id INT REFERENCES Year(year_id) ON DELETE CASCADE
+    
 );
 
 CREATE TABLE Subject (

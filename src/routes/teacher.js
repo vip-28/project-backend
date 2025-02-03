@@ -1,10 +1,13 @@
 import express from "express";
-import { createCode } from "../controllers/teacherController.js";
+import { createCode, getAttendance } from "../controllers/teacherController.js";
 
 const teacherRouter= express.Router();
 
 
 teacherRouter.post("/generateCode/:year/:sec/:num", createCode )
+
+teacherRouter.get("/getAttendance/:year/:sec/:sub", getAttendance )
+
 
 
 export default teacherRouter;
