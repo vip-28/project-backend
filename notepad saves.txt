@@ -27,7 +27,9 @@ CREATE TABLE Subject (
 
 CREATE TABLE Faculty (
     faculty_id SERIAL PRIMARY KEY,
-    faculty_name VARCHAR(100) NOT NULL
+    faculty_name VARCHAR(100) NOT NULL,
+    email varchar(255) UNIQUE NOT NULL,
+    password varchar(255) NOT NULL
 );
 
 CREATE TABLE Subject_Faculty (
@@ -40,6 +42,8 @@ CREATE TABLE Student (
     student_id SERIAL PRIMARY KEY,
     student_name VARCHAR(100) NOT NULL,
     roll_no varchar(20) NOT NULL,
+    email varchar(255) UNIQUE NOT NULL,
+    password varchar(255) NOT NULL,
     year_id INT REFERENCES Year(year_id) ON DELETE CASCADE,
     section_id INT REFERENCES Section(section_id) ON DELETE CASCADE
 );
@@ -64,44 +68,44 @@ INSERT INTO Subject (subject_name, section_id) VALUES
 ('Discrete Structures',1),('Discrete Structures',2), ('Operating Systems',1), ('Operating Systems',2), ('Machine Learning',1), ('Machine Learning',2), ('Database Management System',1), ('Database Management System',2), ('Computer Graphics',1), ('Computer Graphics',2), ('Engineering Economics',1), ('Engineering Economics',2) 
 
 
-INSERT INTO Student (student_name, year_id, section_id, roll_no) VALUES
-('user1', 2, 1, '23csa1' ),
-('user2', 2, 1, '23csa2' ),
-('user3', 2, 1, '23csa3' ),
-('user4', 2, 1, '23csa4' ),
-('user5', 2, 1, '23csa5' ),
-('user6', 2, 1, '23csa6' ),
-('user7', 2, 1, '23csa7' ),
-('user8', 2, 1, '23csa8' ),
-('user9', 2, 1, '23csa9' ),
-('user10', 2, 1, '23csa10' ),
-('user11', 2, 1, '23csa12' ),
-('user12', 2, 1, '23csa13' ),
-('user13', 2, 1, '23csa14' ),
-('user14', 2, 1, '23csa15' ),
-('user15', 2, 1, '23csa16')
+INSERT INTO Student (student_name, year_id, section_id, roll_no,email, password) VALUES
+('user1', 2, 1, '23csa1', 'user1@gmail.com', 'passwordUser' ),
+('user2', 2, 1, '23csa2', 'user2@gmail.com', 'passwordUser' ),
+('user3', 2, 1, '23csa3', 'user3@gmail.com', 'passwordUser' ),
+('user4', 2, 1, '23csa4', 'user4@gmail.com', 'passwordUser' ),
+('user5', 2, 1, '23csa5', 'user5@gmail.com', 'passwordUser' ),
+('user6', 2, 1, '23csa6', 'user6@gmail.com', 'passwordUser' ),
+('user7', 2, 1, '23csa7', 'user7@gmail.com', 'passwordUser' ),
+('user8', 2, 1, '23csa8', 'user8@gmail.com', 'passwordUser' ),
+('user9', 2, 1, '23csa9', 'user9@gmail.com', 'passwordUser' ),
+('user10', 2, 1, '23csa10', 'user10@gmail.com', 'passwordUser' ),
+('user11', 2, 1, '23csa12', 'user11@gmail.com', 'passwordUser' ),
+('user12', 2, 1, '23csa13', 'user12@gmail.com', 'passwordUser' ),
+('user13', 2, 1, '23csa14', 'user13@gmail.com', 'passwordUser' ),
+('user14', 2, 1, '23csa15', 'user14@gmail.com', 'passwordUser' ),
+('user15', 2, 1, '23csa16', 'user15@gmail.com', 'passwordUser' )
 
 
 
 
 
 
-INSERT INTO Student (student_name, year_id, section_id, roll_no) VALUES
-('test1', 2, 2, '23csb1'),
-('test2', 2, 2, '23csb2'),
-('test3', 2, 2, '23csb3'),
-('test4', 2, 2, '23csb4'),
-('test5', 2, 2, '23csb5'),
-('test6', 2, 2, '23csb6'),
-('test7', 2, 2, '23csb7'),
-('test8', 2, 2, '23csb8'),
-('test9', 2, 2, '23csb9'),
-('test10', 2, 2, '23csb10'),
-('test11', 2, 2, '23csb11'),
-('test12', 2, 2, '23csb12'),
-('test13', 2, 2, '23csb13'),
-('test14', 2, 2, '23csb14'),
-('test15', 2, 2, '23csb15')
+INSERT INTO Student (student_name, year_id, section_id, roll_no,email, password) VALUES
+('test1', 2, 2, '23csb1', 'test1@gmail.com', 'passwordTest'),
+('test2', 2, 2, '23csb2', 'test2@gmail.com', 'passwordTest'),
+('test3', 2, 2, '23csb3', 'test3@gmail.com', 'passwordTest'),
+('test4', 2, 2, '23csb4', 'test4@gmail.com', 'passwordTest'),
+('test5', 2, 2, '23csb5', 'test5@gmail.com', 'passwordTest'),
+('test6', 2, 2, '23csb6', 'test6@gmail.com', 'passwordTest'),
+('test7', 2, 2, '23csb7', 'test7@gmail.com', 'passwordTest'),
+('test8', 2, 2, '23csb8', 'test8@gmail.com', 'passwordTest'),
+('test9', 2, 2, '23csb9', 'test9@gmail.com', 'passwordTest'),
+('test10', 2, 2, '23csb10', 'test10@gmail.com', 'passwordTest'),
+('test11', 2, 2, '23csb11', 'test11@gmail.com', 'passwordTest'),
+('test12', 2, 2, '23csb12', 'test12@gmail.com', 'passwordTest'),
+('test13', 2, 2, '23csb13', 'test13@gmail.com', 'passwordTest'),
+('test14', 2, 2, '23csb14', 'test14@gmail.com', 'passwordTest'),
+('test15', 2, 2, '23csb15', 'test15@gmail.com', 'passwordTest')
 
 
 
@@ -140,3 +144,14 @@ join section sec on sub.section_id=sec.section_id;)
 FROM Attendance
 WHERE subject_id = 1  -- Replace with the desired subject_id
 GROUP BY subject_id;
+
+
+
+
+//geolocation 
+   const response = await axios.post('https://your-api-endpoint.com/login', {
+     username: 'user',
+     password: 'pass'
+   }, {
+     withCredentials: true // Necessary to receive cookies
+   });

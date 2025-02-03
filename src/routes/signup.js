@@ -8,7 +8,7 @@ signuprouter.post("/api", async (req,res) => {
         const name = req.body.name;
         const password = req.body.password;
         const email = req.body.email;
-
+                                                
         const hashedpassword = await bcrypt.hash(password,10);
 
         //db call to create

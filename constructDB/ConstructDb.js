@@ -29,6 +29,8 @@ CREATE TABLE Subject (
 CREATE TABLE Faculty (
     faculty_id SERIAL PRIMARY KEY,
     faculty_name VARCHAR(100) NOT NULL
+    email varchar(255) UNIQUE NOT NULL,
+    password varchar(255) NOT NULL,
 );
 
 CREATE TABLE Subject_Faculty (
@@ -40,6 +42,8 @@ CREATE TABLE Subject_Faculty (
 CREATE TABLE Student (
     student_id SERIAL PRIMARY KEY,
     student_name VARCHAR(100) NOT NULL,
+    email varchar(255) UNIQUE NOT NULL,
+    password varchar(255) NOT NULL,
     roll_no varchar(20) NOT NULL,
     year_id INT REFERENCES Year(year_id) ON DELETE CASCADE,
     section_id INT REFERENCES Section(section_id) ON DELETE CASCADE

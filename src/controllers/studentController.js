@@ -1,11 +1,13 @@
 import redisClient from "../config/cacheDb.js";
 import pool from "../config/db.js";
 import { markAttendanceService } from "../models/studentModel.js";
+import { isWithinRadius } from "../utilities/verifyLocation.js";
 const GenDate = (date) => {
   const isoString = date.toISOString();
   const formattedDate = isoString.split("T")[0];
   return formattedDate;
 };
+
 
 
 // 1	"CSA"	2
@@ -46,6 +48,11 @@ export const markAttendance = async (req, res, next) => {
   try {
     
     const { id, sub_id,code } = req.params;
+    const { latitude, longitude } = req.body;
+    if(!isWithinRadius(latitude,longitude)){
+        return res.status(400).json({message: "You are not present in College Premises"});
+    } 
+
     const date = GenDate(new Date());
     const status = "P";
 const section=  await pool.query("select section_id from student where student_id= $1",[id])
@@ -69,6 +76,7 @@ const delKey= await redisClient.del(key);
 
 
 
+console.log("id: "+id+ " Date:"+ date+ " section "+sec+" "+sec_id+" year "+year+" code "+code+ " sub code"+ sub_id);
 
     const result = await markAttendanceService(id, sub_id, date,status, sec_id);
 
@@ -76,7 +84,7 @@ const delKey= await redisClient.del(key);
 
   } catch (err) {
     console.log(err);
-
+    res.status(200).send({message:err.message})
     next(err);
   }
 };
