@@ -58,3 +58,12 @@ return result.rows;
       return result.rows[0];
   };
   
+  export const checkCode= async(code)=>{
+    const result= await pool.query(`select * from invitecodes where codes=$1 `,[code])
+    return result.rows[0];
+  }
+
+  export const expiryofCode= async(code)=>{
+    const result= await pool.query(`update invitecodes set status='expired' where codes=$1;`,[code])
+    return result.rows[0];
+  }

@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import express from "express";
 import { getSecID } from "../controllers/teacherController.js";
 import { studentSign } from "../models/studentModel.js";
-import { teacherSign } from "../models/teacherModel.js";
+import { checkCode, expiryofCode, teacherSign } from "../models/teacherModel.js";
 
 const signuprouter = express.Router();
 
@@ -43,12 +43,25 @@ console.log(req.body)
 
 signuprouter.post("/teacher/api", async (req,res) => {
     try{
-    const {name , password, email}= req.body;
+    const {name , password, email, code}= req.body;
 
                             
         const hashedpassword = await bcrypt.hash(password,10);
 
         //db call to create
+        const codeCheck=await checkCode(code);
+        if(!codeCheck ){
+            return res.status(400).json({ message: "Invalid code" });
+            
+        }
+        if(codeCheck){
+            if(codeCheck.status==='expired'){
+                return res.status(400).json({ message: "Code has expired" });
+            }
+        }
+        await expiryofCode(code);
+        
+        
         
         await teacherSign(name , hashedpassword, email)
         
