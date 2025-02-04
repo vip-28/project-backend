@@ -181,3 +181,8 @@ GROUP BY s.student_id, s.student_name
 ORDER BY s.student_id;
 
 
+
+
+select * from attendance where student_id=72 and subject_id=3;
+select Count(status) from attendance where status='P' and student_id=72 and subject_id=3;
+

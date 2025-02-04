@@ -56,7 +56,8 @@ CREATE TABLE Attendance (
     student_id INT REFERENCES Student(student_id) ON DELETE CASCADE,
     subject_id INT REFERENCES Subject(subject_id) ON DELETE CASCADE,
     date DATE NOT NULL,
-    status CHAR(1) NOT NULL DEFAULT 'A' CHECK (status IN ('P', 'A'))
+    status CHAR(1) NOT NULL DEFAULT 'A' CHECK (status IN ('P', 'A')),
+    section_id INT REFERENCES Section(section_id) ON DELETE CASCADE
 );
 
 CREATE INDEX date ON Attendance(student_id, subject_id, date);`

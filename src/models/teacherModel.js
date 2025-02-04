@@ -7,8 +7,8 @@ export const createCodeService = async (code,year,sec) => {
   };
 
 
-  export const dateAdd= async (date,sec_id)=>{
-    const result= await pool.query("Insert into attendance(date,section_id) values($1, $2)",[date,sec_id]);
+  export const dateAdd= async (date,sec_id,sub)=>{
+    const result= await pool.query("Insert into attendance(date,section_id,subject_id) values($1, $2,$3)",[date,sec_id,sub]);
     return result.rows[0];
   }
 
@@ -35,7 +35,7 @@ WHERE s.section_id = $1 AND s.year_id=$3
 GROUP BY s.student_id, s.student_name
 ORDER BY s.student_id;
 `,[sec,sub,year])
-return result;
+return result.rows;
   }
 
 

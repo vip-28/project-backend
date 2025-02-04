@@ -1,12 +1,13 @@
 import redisClient from "../config/cacheDb.js";
 import pool from "../config/db.js";
-import { markAttendanceService } from "../models/studentModel.js";
+import { checkAttendanceService, getTotalAttendance, markAttendanceService } from "../models/studentModel.js";
 import { isWithinRadius } from "../utilities/verifyLocation.js";
 const GenDate = (date) => {
   const isoString = date.toISOString();
   const formattedDate = isoString.split("T")[0];
   return formattedDate;
 };
+
 
 
 
@@ -88,3 +89,20 @@ console.log("id: "+id+ " Date:"+ date+ " section "+sec+" "+sec_id+" year "+year+
     next(err);
   }
 };
+
+
+export const checkAttendance= async (req, res, next) => {
+    try {
+        const { id, sub_id } = req.params;
+        const result= await checkAttendanceService(id, sub_id);
+        const total_attended= await getTotalAttendance(id,sub_id);
+        res.send({data:result,
+            total:total_attended
+        })
+    }catch(err){
+        console.log(err);
+        res.status(200).send({message:err.message})
+        next(err);
+
+    }
+}

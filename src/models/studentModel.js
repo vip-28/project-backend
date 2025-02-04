@@ -30,8 +30,24 @@ export const studentSign = async (
 };
 
 export const studentLogin = async (email) => {
-  const result = await pool.query(`
-    select * from student where email=$1 `,[email]);
+  const result = await pool.query(
+    `
+    select * from student where email=$1 `,
+    [email]
+  );
 
-    return result.rows[0];
+  return result.rows[0];
 };
+
+
+
+export const checkAttendanceService= async(id, sub)=>{
+  const result= await pool. query(`select * from attendance where student_id=$1 and subject_id=$2;
+`,[id,sub])
+return result.rows;
+}
+
+export const getTotalAttendance= async(id, sub)=>{
+  const result= await pool. query(`select Count(status) from attendance where status='P' and student_id=$1 and subject_id=$2;`,[id,sub])
+return result.rows[0];
+}

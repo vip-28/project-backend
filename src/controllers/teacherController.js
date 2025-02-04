@@ -44,7 +44,7 @@ const pipeline = redisClient.multi();
 export const createCode = async (req, res, next) => {
   try {
     console.log(req.params); // Debugging
-    const { year, sec, num } = req.params;
+    const { year, sec, num,sub } = req.params;
 
     let arr = genCode(num);
 
@@ -69,7 +69,7 @@ export const createCode = async (req, res, next) => {
     
     const date = GenDate(new Date());
 
-    await dateAdd(date, sec_id);
+    await dateAdd(date, sec_id,sub);
     res.send({ message: "Success" });
   } catch (err) {
     console.log(err);
