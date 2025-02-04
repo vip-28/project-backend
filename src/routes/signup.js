@@ -18,7 +18,7 @@ signuprouter.post("/student/api", async (req,res) => {
         // const year= req.body.year;
 
         const sec_id= getSecID(sec);
-console.log(sec_id)
+console.log(req.body)
                             
         const hashedpassword = await bcrypt.hash(password,10);
 

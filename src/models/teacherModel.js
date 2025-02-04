@@ -49,3 +49,12 @@ return result;
     );
     return result.rows[0];
   };
+
+
+  export const teacherLogin = async (email) => {
+    const result = await pool.query(`
+      select * from faculty where email=$1 `,[email]);
+  
+      return result.rows[0];
+  };
+  

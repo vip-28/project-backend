@@ -25,7 +25,13 @@ export const studentSign = async (
   const result = await pool.query(
     "Insert into student(student_name, roll_no,year_id,section_id,email,password) values ($1, $2, $3, $4, $5, $6)",
     [name, roll_no, year, sec, email, password]
-    
   );
   return result.rows[0];
+};
+
+export const studentLogin = async (email) => {
+  const result = await pool.query(`
+    select * from student where email=$1 `,[email]);
+
+    return result.rows[0];
 };
