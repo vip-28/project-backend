@@ -63,6 +63,7 @@ CREATE TABLE Attendance (
 CREATE INDEX date ON Attendance(student_id, subject_id, date);
 
 create type usecase as ENUM('available', 'expired');
+
 create table inviteCodes(
 codes varchar(255) PRIMARY KEY,
 status usecase DEFAULT 'available' NOT NULL

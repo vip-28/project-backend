@@ -186,3 +186,26 @@ ORDER BY s.student_id;
 select * from attendance where student_id=72 and subject_id=3;
 select Count(status) from attendance where status='P' and student_id=72 and subject_id=3;
 
+
+
+
+newGuy here
+abcdef@ietdavv.edu.in
+12345678
+roll- random123
+year-2
+CSB 
+
+const rateLimit = require("express-rate-limit");
+
+const loginLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 5, // Limit to 5 attempts
+  message: "Too many login attempts. Try again later.",
+});
+
+app.post("/user/signin/student/api", loginLimiter, studentLoginHandler);
+app.post("/user/signin/teacher/api", loginLimiter, teacherLoginHandler);
+
+
+

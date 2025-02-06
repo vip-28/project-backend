@@ -19,6 +19,11 @@ signuprouter.post("/student/api", async (req,res) => {
 
         const sec_id= getSecID(sec);
 console.log(req.body)
+
+if (!email.endsWith("@ietdavv.edu.in")) {
+    return res.status(403).json({ message: "Invalid email domain for students" });
+  }
+
                             
         const hashedpassword = await bcrypt.hash(password,10);
 
@@ -44,7 +49,10 @@ console.log(req.body)
 signuprouter.post("/teacher/api", async (req,res) => {
     try{
     const {name , password, email, code}= req.body;
-
+    if (!email.endsWith("@gmail.com") && !email.endsWith("@yahoo.com")) {
+        return res.status(403).json({ message: "Invalid email domain for teachers" });
+      }
+    
                             
         const hashedpassword = await bcrypt.hash(password,10);
 
