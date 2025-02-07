@@ -208,4 +208,9 @@ app.post("/user/signin/student/api", loginLimiter, studentLoginHandler);
 app.post("/user/signin/teacher/api", loginLimiter, teacherLoginHandler);
 
 
+pagination---
+limit = 10;
+offset = (limit * pageNumber) - limit;
+
+
 

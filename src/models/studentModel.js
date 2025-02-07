@@ -51,3 +51,10 @@ export const getTotalAttendance= async(id, sub)=>{
   const result= await pool. query(`select Count(status) from attendance where status='P' and student_id=$1 and subject_id=$2;`,[id,sub])
 return result.rows[0];
 }
+
+
+export const recentAttendanceService= async(id)=>{
+  const result= await pool.query(`select subject_id,s.student_id,attendance_id,status,s.section_id,created_at,year_id,student_name from attendance as a, student as s  where  s.student_id=a.student_id and s.student_id=$1  order by created_at desc limit 10;`,[id])
+  return result.rows;
+
+}

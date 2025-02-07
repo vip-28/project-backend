@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import JWT_SECRET from "../config/secrets.js";
 import { studentLogin } from "../models/studentModel.js";
 import { teacherLogin } from "../models/teacherModel.js";
+import redisClient from "../config/cacheDb.js";
 
 const signinrouter = express.Router();
 
@@ -19,7 +20,9 @@ signinrouter.post("/student/api",async (req,res) => {
     
         // db call for user
         const user= await studentLogin(email);
-        console.log(user);
+        if(!user){
+            return res.status(403).json({message:"No Such User"});
+        }
         
     
         // const user = await 
@@ -35,6 +38,16 @@ signinrouter.post("/student/api",async (req,res) => {
 
                 
             );
+            const save={
+                email:user?.email,
+                roll_no:user?.roll_no,
+                section_id:user?.section_id,
+                student_id:user?.student_id,
+                name: user?.student_name,
+                year:user?.year_id,
+                role:"Student"
+            }
+            const cache= await redisClient.setEx(email,600,JSON.stringify(save));
             res.json({
                 message:{
                     email:user?.email,
@@ -53,7 +66,7 @@ signinrouter.post("/student/api",async (req,res) => {
             })
         }
     }catch(err){
-        res.status(401).send({message:"WRONG CREDENTIALS"});
+        res.status(401).send({message:err.message});
     }
     
     

@@ -58,6 +58,7 @@ CREATE TABLE Attendance (
     date DATE NOT NULL,
     status CHAR(1) NOT NULL DEFAULT 'A' CHECK (status IN ('P', 'A')),
     section_id INT REFERENCES Section(section_id) ON DELETE CASCADE
+    created_at timestamp default current_timestamp
 );
 
 CREATE INDEX date ON Attendance(student_id, subject_id, date);

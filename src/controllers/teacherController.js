@@ -51,7 +51,7 @@ export const createCode = async (req, res, next) => {
     for (const e of arr) {
       const key = `${year}:${sec}:${e}`;
 
-      pipeline.setEx(key, 60, e);
+      pipeline.setEx(key, 600, e);
     }
     await pipeline.exec();
 
