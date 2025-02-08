@@ -58,3 +58,5 @@ export const recentAttendanceService= async(id)=>{
   return result.rows;
 
 }
+
+

@@ -85,6 +85,15 @@ signinrouter.post("/teacher/api",async (req,res) => {
         // db call for user
         const user= await teacherLogin(email);
         console.log(user);
+
+        const save={
+            email:user?.email,
+            name:user?.faculty_name,
+            id:user?.faculty_id,
+            role:"Teacher"
+
+        }
+        const cache= await redisClient.setEx(email,600,JSON.stringify(save));
         
     
         // const user = await 
@@ -100,7 +109,7 @@ signinrouter.post("/teacher/api",async (req,res) => {
             res.json({
                 message:{
                     email:user.email,
-                    name:user.name,
+                    name:user.faculty_name,
                     faculty_id:user.faculty_id,
                     role:"Teacher",
 
@@ -117,5 +126,15 @@ signinrouter.post("/teacher/api",async (req,res) => {
     }
     
 })
+
+
+signinrouter.post("/logout", async (req, res) => {
+
+    res.cookie("token", null, {
+    expires: new Date(Date.now()),
+  });
+  res.send("User Logged Out Successful!");
+
+});
 
 export default signinrouter;

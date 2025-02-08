@@ -5,9 +5,9 @@ import { middleauth, teacherAuth } from "../middlewares/authmiddleware.js";
 const teacherRouter= express.Router();
 
 
-teacherRouter.post("/generateCode/:year/:sec/:sub/:num", middleauth,teacherAuth,createCode )   
+teacherRouter.post("/generateCode", middleauth,teacherAuth,createCode )   
 
-teacherRouter.get("/getAttendance/:year/:sec/:sub", middleauth,teacherAuth,getAttendance )
+teacherRouter.get("/getAttendance", middleauth,teacherAuth,getAttendance )
 
 
 

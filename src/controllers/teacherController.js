@@ -2,6 +2,7 @@ import { genCode } from "../utilities/genCode.js";
 import redisClient from "../config/cacheDb.js";
 
 import { createCodeService, dateAdd, getAttendanceService } from "../models/teacherModel.js";
+import pool from "../config/db.js";
 
 const GenDate = (date) => {
   const isoString = date.toISOString();
@@ -43,8 +44,9 @@ const pipeline = redisClient.multi();
 
 export const createCode = async (req, res, next) => {
   try {
-    console.log(req.params); // Debugging
-    const { year, sec, num,sub } = req.params;
+
+    // console.log(req.params); // Debugging
+    const { year, sec, num,subject } = req.body;
 
     let arr = genCode(num);
 
@@ -65,7 +67,15 @@ export const createCode = async (req, res, next) => {
     //         createCodeService(e);
     //     })
     const sec_id = getSecID(sec);
+    console.log(sec);
+    
     console.log(sec_id);
+    const result1= await pool.query(
+      `select subject_id from subject where section_id=$1 and subject_name=$2;`,
+      [sec_id, subject]
+    );
+    
+  const sub = result1.rows[0].subject_id;
     
     const date = GenDate(new Date());
 
@@ -81,8 +91,18 @@ export const createCode = async (req, res, next) => {
 
 export const getAttendance= async ( req, res,next)=>{
   try{
-    const {sec,sub,year} = req.params;
-    const result= await getAttendanceService(sec,sub,year);
+    const {sec,subject,year} = req.body;
+    const sec_id = getSecID(sec);
+
+
+    const result1= await pool.query(
+      `select subject_id from subject where section_id=$1 and subject_name=$2;`,
+      [sec_id, subject]
+    );
+  const sub = result1.rows[0].subject_id;
+console.log(sec_id+ " "+ sub + " "+ year);
+
+    const result= await getAttendanceService(sec_id,sub,year);
     res.send(result)
   }catch(err){
     console.log(err);

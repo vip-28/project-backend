@@ -12,7 +12,7 @@ const GenDate = (date) => {
   const formattedDate = isoString.split("T")[0];
   return formattedDate;
 };
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
 // 1	"CSA"	2
 // 2	"CSB"	2
@@ -55,14 +55,12 @@ const getSec = (sec_id) => {
 };
 
 export const markAttendance = async (req, res, next) => {
-
   try {
-    const{token}= req.cookies;
+    const { token } = req.cookies;
     const decodedObj = await jwt.verify(token, process.env.JWT_SECRET);
-    console.log("decoded: " +JSON.stringify(decodedObj));
-    
+    console.log("decoded: " + JSON.stringify(decodedObj));
 
-    const { id, sub_id, code } = req.params;
+    const { id, subject, code } = req.body;
     const { latitude, longitude } = req.body;
     if (!isWithinRadius(latitude, longitude)) {
       return res
@@ -70,6 +68,21 @@ export const markAttendance = async (req, res, next) => {
         .json({ message: "You are not present in College Premises" });
     }
 
+    
+    
+
+    const result1 = await pool.query(
+      `SELECT subject_id 
+         FROM subject 
+         JOIN student ON subject.section_id = student.section_id 
+         WHERE student.student_id = $1
+         AND subject.subject_name = $2`,
+      [id, subject]
+    );
+    const sub_id = result1.rows[0].subject_id; 
+
+    console.log(result1);
+    console.log(sub_id);
     const date = GenDate(new Date());
     const status = "P";
     const section = await pool.query(
@@ -132,7 +145,20 @@ export const markAttendance = async (req, res, next) => {
 
 export const checkAttendance = async (req, res, next) => {
   try {
-    const { id, sub_id } = req.params;
+    const { id, subject } = req.body;
+    const result1= await pool.query(
+        `SELECT subject_id 
+           FROM subject 
+           JOIN student ON subject.section_id = student.section_id 
+           WHERE student.student_id = $1
+           AND subject.subject_name = $2`,
+        [id, subject]
+      );
+    const sub_id = result1.rows[0].subject_id; 
+    console.log(sub_id);
+    
+
+
     const result = await checkAttendanceService(id, sub_id);
     const total_attended = await getTotalAttendance(id, sub_id);
     res.send({ data: result, total: total_attended });
