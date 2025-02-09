@@ -1,3 +1,6 @@
+// create type usecase as ENUM('available', 'expired');
+// remove this upper line from 
+//make sure later on student_id should be not null in attendance for now we are making it nullable for development purposes
 const query= `CREATE TABLE UNIQUECODES (
   id serial not null,
   code varchar(100),
@@ -30,9 +33,9 @@ CREATE TABLE Subject (
 
 CREATE TABLE Faculty (
     faculty_id SERIAL PRIMARY KEY,
-    faculty_name VARCHAR(100) NOT NULL
+    faculty_name VARCHAR(100) NOT NULL,
     email varchar(255) UNIQUE NOT NULL,
-    password varchar(255) NOT NULL,
+    password varchar(255) NOT NULL
 );
 
 CREATE TABLE Subject_Faculty (
@@ -57,7 +60,7 @@ CREATE TABLE Attendance (
     subject_id INT REFERENCES Subject(subject_id) ON DELETE CASCADE,
     date DATE NOT NULL,
     status CHAR(1) NOT NULL DEFAULT 'A' CHECK (status IN ('P', 'A')),
-    section_id INT REFERENCES Section(section_id) ON DELETE CASCADE
+    section_id INT REFERENCES Section(section_id) ON DELETE CASCADE,
     created_at timestamp default current_timestamp
 );
 

@@ -47,7 +47,7 @@ signinrouter.post("/student/api",async (req,res) => {
                 year:user?.year_id,
                 role:"Student"
             }
-            const cache= await redisClient.setEx(email,600,JSON.stringify(save));
+            const cache= await redisClient.setEx(email,3600,JSON.stringify(save));
             res.json({
                 message:{
                     email:user?.email,

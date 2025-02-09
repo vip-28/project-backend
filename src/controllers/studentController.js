@@ -60,9 +60,11 @@ export const markAttendance = async (req, res, next) => {
     const decodedObj = await jwt.verify(token, process.env.JWT_SECRET);
     console.log("decoded: " + JSON.stringify(decodedObj));
 
-    const { id, subject, code } = req.body;
+    const { student_id, subject, code,section,year } = req.body;
     const { latitude, longitude } = req.body;
     if (!isWithinRadius(latitude, longitude)) {
+      console.log("Not near Location");
+      
       return res
         .status(400)
         .json({ message: "You are not present in College Premises" });
@@ -77,29 +79,43 @@ export const markAttendance = async (req, res, next) => {
          JOIN student ON subject.section_id = student.section_id 
          WHERE student.student_id = $1
          AND subject.subject_name = $2`,
-      [id, subject]
+      [student_id, subject]
     );
+    // console.log(result1.rows[0]+" "+student_id+" "+subject);
+    
     const sub_id = result1.rows[0].subject_id; 
+    if(!sub_id){
+      return res.json
+    }
+// console.log(sub_id);
 
-    console.log(result1);
-    console.log(sub_id);
+    // console.log(result1);
+    // console.log(sub_id);
     const date = GenDate(new Date());
     const status = "P";
-    const section = await pool.query(
-      "select section_id from student where student_id= $1",
-      [id]
-    );
-    const year_res = await pool.query(
-      "select year_id from student where student_id= $1",
-      [id]
-    );
+    // const section = await pool.query(
+    //   "select section_id from student where student_id= $1",
+    //   [student]
+    // );
+    // const year_res = await pool.query(
+    //   "select year_id from student where student_id= $1",
+    //   [id]
+    // );
+    // const section
 
-    const year = year_res.rows[0].year_id;
-    const sec_id = section.rows[0].section_id;
+    // const year = year_res.rows[0].year_id;
 
-    const sec = getSec(sec_id);
+
+    const sec_id = section;//psql
+
+    const sec = getSec(sec_id);//redis
+    console.log(sec);
+    console.log(year);
+    
+    
 
     const key = `${year}:${sec}:${code}`;
+console.log(key);
 
     const data = await redisClient.GET(key);
     console.log(data);
@@ -112,7 +128,7 @@ export const markAttendance = async (req, res, next) => {
 
     console.log(
       "id: " +
-        id +
+        student_id +
         " Date:" +
         date +
         " section " +
@@ -128,7 +144,7 @@ export const markAttendance = async (req, res, next) => {
     );
 
     const result = await markAttendanceService(
-      id,
+      student_id,
       sub_id,
       date,
       status,

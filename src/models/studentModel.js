@@ -42,7 +42,7 @@ export const studentLogin = async (email) => {
 
 
 export const checkAttendanceService= async(id, sub)=>{
-  const result= await pool. query(`select * from attendance where student_id=$1 and subject_id=$2;
+  const result= await pool. query(`select * from attendance where student_id=$1 and subject_id=$2 order by created_at desc limit 10;
 `,[id,sub])
 return result.rows;
 }
@@ -54,7 +54,8 @@ return result.rows[0];
 
 
 export const recentAttendanceService= async(id)=>{
-  const result= await pool.query(`select subject_id,s.student_id,attendance_id,status,s.section_id,created_at,year_id,student_name from attendance as a, student as s  where  s.student_id=a.student_id and s.student_id=$1  order by created_at desc limit 10;`,[id])
+  const result= await pool.query(`select a.subject_id,subject_name,s.student_id,attendance_id,status,s.section_id,created_at,year_id,student_name from attendance as a, student as s, subject as sub  where 
+s.student_id=a.student_id and a.subject_id=sub.subject_id and s.student_id=$1  order by created_at desc limit 10`,[id])
   return result.rows;
 
 }
