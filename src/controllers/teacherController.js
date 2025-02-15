@@ -45,7 +45,7 @@ const pipeline = redisClient.multi();
 export const createCode = async (req, res, next) => {
   try {
 
-    // console.log(req.params); // Debugging
+    console.log("recieved data",req.body); // Debugging
     const { year, sec, num,subject } = req.body;
 
     let arr = genCode(num);
@@ -67,6 +67,7 @@ export const createCode = async (req, res, next) => {
     //         createCodeService(e);
     //     })
     const sec_id = getSecID(sec);
+    if (!sec_id) return res.status(400).json({ error: "Invalid section" });
     console.log(sec);
     
     console.log(sec_id);
@@ -74,13 +75,15 @@ export const createCode = async (req, res, next) => {
       `select subject_id from subject where section_id=$1 and subject_name=$2;`,
       [sec_id, subject]
     );
-    
+    if (result1.rows.length === 0) {
+      return res.status(404).json({ error: "Subject not found" });
+    }
   const sub = result1.rows[0].subject_id;
     
     const date = GenDate(new Date());
 
     await dateAdd(date, sec_id,sub);
-    res.send({ message: "Success" });
+    res.send({ message: "Success", code:arr[0] });
   } catch (err) {
     console.log(err);
 
@@ -94,6 +97,8 @@ export const getAttendance= async ( req, res,next)=>{
     const {sec,subject,year} = req.body;
     const sec_id = getSecID(sec);
 
+    console.log(req.body);
+    
 
     const result1= await pool.query(
       `select subject_id from subject where section_id=$1 and subject_name=$2;`,

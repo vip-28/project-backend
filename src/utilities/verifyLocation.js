@@ -1,7 +1,8 @@
 export function isWithinRadius(userLat, userLng) {
-    const targetLat=22.68187127048084
-    
-    const targetLng=75.88036122571177
+    // const targetLat=22.68187127048084
+    const targetLat=22.7195687  //TESTING PURPOSES 
+    const targetLng=75.8577258 //TESTING PURPOSES
+    // const targetLng=75.88036122571177
     const radius = 50
     const earthRadius = 6371000; // Earth radius in meters
 

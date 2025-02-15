@@ -61,7 +61,8 @@ CREATE TABLE Attendance (
     date DATE NOT NULL,
     status CHAR(1) NOT NULL DEFAULT 'A' CHECK (status IN ('P', 'A')),
     section_id INT REFERENCES Section(section_id) ON DELETE CASCADE,
-    created_at timestamp default current_timestamp
+    created_at timestamp default current_timestamp,
+    UNIQUE(student_id,subject_id,section_id,date)
 );
 
 CREATE INDEX date ON Attendance(student_id, subject_id, date);
@@ -94,6 +95,18 @@ INSERT INTO invitecodes(codes) VALUES
 ('QK9DGymB'), ('8T31pm0H'), ('XmjEmNCl'), ('hnSDuNBZ'), ('0uF0a1qG'), ('qqmoJORQ'), ('qGSKInDk'), ('KOmlaVJZ'), 
 ('VlRlGYq0'), ('cffHop3c'), ('jJVneVyM'), ('jBKJ5lf6'), ('5Z9gDcAs'), ('61zCV54h'), ('9cOBHN7p'), ('sAPqe1GC'), 
 ('2wYHty2n'), ('Jmec2eKS'), ('KFbFzQqt'), ('fYbhD7v4'), ('jBRbgRL4'), ('VWBCc8FM');
+
+
+INSERT INTO Year (year_name) VALUES ('First Year'), ('Second Year'), ('Third Year'), ('Fourth Year');
+
+INSERT INTO SECTION (section_name, year_id, total_student) values
+('CSA',2,90), ('CSB',2,85), ('ITA',2,82), ('ITB',2,81), ('ETCA',2,80), ('ETCB',2,80),('EI',2,78),('MECH',2,70),('CIVIL',2,68);
+
+INSERT INTO Subject (subject_name, section_id) VALUES 
+('Discrete Structures',1),('Discrete Structures',2), ('Operating Systems',1), ('Operating Systems',2), ('Machine Learning',1), ('Machine Learning',2), ('Database Management System',1), ('Database Management System',2), ('Computer Graphics',1), ('Computer Graphics',2), ('Engineering Economics',1), ('Engineering Economics',2) ;
+
+
+
 
 `
 

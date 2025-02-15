@@ -214,3 +214,6 @@ offset = (limit * pageNumber) - limit;
 
 
 
+docker exec -it postgres-db psql -U postgres
+docker run -d --name redis-db -p 127.0.0.1:6379:6379 redis
+

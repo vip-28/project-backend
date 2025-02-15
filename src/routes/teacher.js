@@ -7,7 +7,7 @@ const teacherRouter= express.Router();
 
 teacherRouter.post("/generateCode", middleauth,teacherAuth,createCode )   
 
-teacherRouter.get("/getAttendance", middleauth,teacherAuth,getAttendance )
+teacherRouter.post("/getAttendance", middleauth,teacherAuth,getAttendance )
 
 
 

@@ -15,7 +15,7 @@ export const genCode= (count, length = 6) => {
     let code = Array.from({ length }, () => alpha[Math.floor(Math.random() * alpha.length)]).join('');
 
     let codes= genArray(code,count);
-    return codes
+    return [code,...codes]
 };
 
 
