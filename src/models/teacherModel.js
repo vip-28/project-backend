@@ -14,10 +14,15 @@ export const createCodeService = async (code,year,sec) => {
 
 
   export const getAttendanceService= async (sec,sub,year)=>{
-    const result= await pool.query(`  SELECT 
+    const result= await pool.query(`SELECT 
     s.student_id, 
+    s.roll_no,
     s.student_name, 
     COUNT(a.date) AS attended_classes, 
+    (SELECT COUNT(DISTINCT date) 
+        FROM attendance 
+        WHERE section_id = $1 AND subject_id = $2
+    ) AS total_classes,  
     (COUNT(a.date) * 100.0 / 
          NULLIF(
             (SELECT COUNT(DISTINCT date) 
@@ -30,10 +35,12 @@ FROM student s
 LEFT JOIN attendance a 
     ON s.student_id = a.student_id 
     AND a.status = 'P'
-    AND a.subject_id = $2  -- Ensures we count attendance for the given subject only
-WHERE s.section_id = $1 AND s.year_id=$3
+    AND a.subject_id = $2 
+WHERE s.section_id = $1 
+AND s.year_id = $3
 GROUP BY s.student_id, s.student_name
 ORDER BY s.student_id;
+
 `,[sec,sub,year])
 return result.rows;
   }

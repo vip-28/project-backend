@@ -84,16 +84,16 @@ signinrouter.post("/teacher/api",async (req,res) => {
         
         // db call for user
         const user= await teacherLogin(email);
-        console.log(user);
 
         const save={
             email:user?.email,
             name:user?.faculty_name,
             id:user?.faculty_id,
+
             role:"Teacher"
 
         }
-        const cache= await redisClient.setEx(email,600,JSON.stringify(save));
+        const cache= await redisClient.setEx(email,3600,JSON.stringify(save));
         
     
         // const user = await 
