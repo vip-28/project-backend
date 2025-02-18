@@ -60,18 +60,15 @@ export const markAttendance = async (req, res, next) => {
     const decodedObj = await jwt.verify(token, process.env.JWT_SECRET);
     console.log("decoded: " + JSON.stringify(decodedObj));
 
-    const { student_id, subject, code,section,year } = req.body;
+    const { student_id, subject, code, section, year } = req.body;
     const { latitude, longitude } = req.body;
     if (!isWithinRadius(latitude, longitude)) {
       console.log("Not near Location");
-      
+
       return res
         .status(400)
         .json({ message: "You are not present in College Premises" });
     }
-
-    
-    
 
     const result1 = await pool.query(
       `SELECT subject_id 
@@ -82,12 +79,12 @@ export const markAttendance = async (req, res, next) => {
       [student_id, subject]
     );
     // console.log(result1.rows[0]+" "+student_id+" "+subject);
-    
-    const sub_id = result1.rows[0].subject_id; 
-    if(!sub_id){
-      return res.json
+
+    const sub_id = result1.rows[0].subject_id;
+    if (!sub_id) {
+      return res.json;
     }
-// console.log(sub_id);
+    // console.log(sub_id);
 
     // console.log(result1);
     // console.log(sub_id);
@@ -105,17 +102,14 @@ export const markAttendance = async (req, res, next) => {
 
     // const year = year_res.rows[0].year_id;
 
+    const sec_id = section; //psql
 
-    const sec_id = section;//psql
-
-    const sec = getSec(sec_id);//redis
+    const sec = getSec(sec_id); //redis
     console.log(sec);
     console.log(year);
-    
-    
 
     const key = `${year}:${sec}:${code}`;
-console.log(key);
+    console.log(key);
 
     const data = await redisClient.GET(key);
     console.log(data);
@@ -161,23 +155,31 @@ console.log(key);
 
 export const checkAttendance = async (req, res, next) => {
   try {
-    const { id, subject } = req.body;
-    const result1= await pool.query(
-        `SELECT subject_id 
+    console.log(req.body);
+
+    const { id, subject } = req.query;
+
+    const result1 = await pool.query(
+      `SELECT subject_id 
            FROM subject 
            JOIN student ON subject.section_id = student.section_id 
            WHERE student.student_id = $1
            AND subject.subject_name = $2`,
-        [id, subject]
-      );
-    const sub_id = result1.rows[0].subject_id; 
-    console.log(sub_id);
+      [id, subject]
+    );
+    const sub_id = result1.rows[0].subject_id;
+    const classes = await pool.query(
+      `select count(Distinct(date)) as answer from attendance where subject_id=$1;`,
+      [sub_id]
+    );
+    const total_classes=classes.rows[0].answer;
     
 
 
     const result = await checkAttendanceService(id, sub_id);
     const total_attended = await getTotalAttendance(id, sub_id);
-    res.send({ data: result, total: total_attended });
+
+    res.send({ data: result, total: total_attended, total_classes: total_classes });
   } catch (err) {
     console.log(err);
     res.status(200).send({ message: err.message });
